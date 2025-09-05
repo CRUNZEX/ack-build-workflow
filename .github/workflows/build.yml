@@ -185,7 +185,6 @@ jobs:
         run: |
           repo init \
             --no-tags \
-            --depth=1 \
             --dissociate \
             -u https://android.googlesource.com/kernel/manifest \
             -b ${ACK_BRANCH}
@@ -198,6 +197,21 @@ jobs:
             --force-sync \
             --fetch-submodules \
             -j$(nproc --all)
+
+      - name: Unshallow KernelSU-Next submodule
+        working-directory: kernel-build
+        run: |
+          cd common
+
+          git submodule update --init --recursive
+
+          git -C KernelSU-Next checkout next-susfs || true
+
+          git -C KernelSU-Next fetch --unshallow --tags || \
+          git -C KernelSU-Next fetch --deepen=100000 --tags
+
+          echo "KernelSU-Next commit count:"
+          git -C KernelSU-Next rev-list --count HEAD
 
       - name: Build, and process the kernel(s)
         working-directory: kernel-build
