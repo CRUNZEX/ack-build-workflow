@@ -75,6 +75,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
+      ZYGISK_ENABLED: "1"
       BUILD_CONFIGS: ${{ github.event.inputs.build_configs }}
       IMAGE_TYPE: ${{ github.event.inputs.kernel_image_type }}
 
